@@ -1,0 +1,54 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci
+        
+    - name: Run tests
+      run: |
+        cd frontend
+        npm test
+      
+    - name: Build application
+      run: |
+        cd frontend
+        npm run build
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+    - name: Install Lighthouse
+      run: npm install -g lighthouse
+    - name: Run Lighthouse
+      run: |
+        lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html --chrome-flags="--headless"
