@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Minus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -18,7 +18,11 @@ const Menu = () => {
 
   const fetchMenuItems = async () => {
     try {
-      const response = await axios.get('/api/menu');
+      // ✅ FIX: Use the environment variable for API base URL
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+      console.log('Fetching from:', `${API_BASE_URL}/api/items`);
+      
+      const response = await axios.get(`${API_BASE_URL}/api/items`);
       setMenuItems(response.data);
     } catch (error) {
       toast.error('Failed to load menu items');
