@@ -8,7 +8,10 @@ import Menu from './pages/Menu';
 import Cart from './pages/Cart';
 import OrderTracking from './pages/OrderTracking';
 import { CartProvider } from './context/CartContext';
-import AdminPanel from './pages/AdminPanel';
+
+// ✅ Try these different import paths:
+import AdminPanel from './pages/AdminPanel'; // If file is in src/pages/
+// import AdminPanel from './AdminPanel'; // If file is in src/pages
 
 function App() {
   return (
