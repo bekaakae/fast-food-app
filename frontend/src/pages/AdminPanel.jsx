@@ -41,23 +41,23 @@ const AdminPanel = () => {
       setMessageType('');
     }, 3000);
   };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
+  // fetchOrders function:
   const fetchOrders = async () => {
-    try {
-      const response = await ordersAPI.getAll();
-      setOrders(response.data);
-      showMessage('Orders loaded successfully');
-    } catch (err) {
-      console.error('Error fetching orders:', err);
-      showMessage('Failed to load orders', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    console.log('🔄 Fetching orders from API...');
+    const response = await ordersAPI.getAll();
+    console.log('✅ Orders loaded:', response.data);
+    setOrders(response.data);
+    showMessage('Orders loaded successfully');
+  } catch (err) {
+    console.error('❌ Error fetching orders:', err);
+    console.error('Error details:', err.response?.data);
+    showMessage('Failed to load orders', 'error');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const updateOrderStatus = async (orderId, newStatus) => {
     setUpdating(orderId);
@@ -229,6 +229,17 @@ const AdminPanel = () => {
                       </div>
                       <div className="text-sm font-semibold text-primary-600">
                         ${order.totalAmount?.toFixed(2) || '0.00'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900">
+                        {order.items?.length || 0} items
+                      </div>
+                      <div className="text-xs text-gray-500 max-w-xs truncate">
+                        {order.items?.map(item => item.name || 'Unnamed Item').join(', ')}
+                      </div>
+                      <div className="text-sm font-semibold text-primary-600">
+                       ${order.totalAmount?.toFixed(2) || '0.00'}
                       </div>
                     </td>
                     <td className="px-6 py-4">
