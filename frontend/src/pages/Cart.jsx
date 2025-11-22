@@ -37,10 +37,15 @@ const Cart = () => {
     setIsProcessing(true);
 
     try {
+      // ✅ FIX: Use the full backend URL from environment variable
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+      console.log('API Base URL:', API_BASE_URL);
+
       // Create order
       const orderData = {
         items: items.map(item => ({
           menuItem: item._id,
+          name: item.name, // ✅ ADD THIS - your backend expects name
           quantity: item.quantity,
           price: item.price
         })),
@@ -48,10 +53,13 @@ const Cart = () => {
         totalAmount: total
       };
 
-      const orderResponse = await axios.post('/api/orders', orderData);
+      console.log('Sending order to:', `${API_BASE_URL}/api/orders`);
+      const orderResponse = await axios.post(`${API_BASE_URL}/api/orders`, orderData);
       
-      // Process payment
-      const paymentResponse = await axios.post('/api/payment/process', {
+      console.log('Order created:', orderResponse.data);
+
+      // Process payment (you might want to handle this differently)
+      const paymentResponse = await axios.post(`${API_BASE_URL}/api/payment/process`, {
         orderId: orderResponse.data._id,
         paymentMethod: 'card',
         amount: total
@@ -68,12 +76,14 @@ const Cart = () => {
       }
     } catch (error) {
       console.error('Checkout error:', error);
+      console.error('Error response:', error.response?.data);
       toast.error('Failed to place order. Please try again.');
     } finally {
       setIsProcessing(false);
     }
   };
 
+  // ... rest of your component remains the same
   if (items.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
