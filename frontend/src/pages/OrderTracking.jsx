@@ -29,10 +29,15 @@ const OrderTracking = () => {
 
   const fetchOrder = async () => {
     try {
-      const response = await axios.get(`/api/orders/${orderId}`);
+      // ✅ FIX: Use the full backend URL from environment variable
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+      console.log('Fetching order from:', `${API_BASE_URL}/api/orders/${orderId}`);
+      
+      const response = await axios.get(`${API_BASE_URL}/api/orders/${orderId}`);
       setOrder(response.data);
     } catch (error) {
       console.error('Error fetching order:', error);
+      console.error('Error details:', error.response?.data);
     } finally {
       setLoading(false);
     }
@@ -138,7 +143,7 @@ const OrderTracking = () => {
             {order.items.map((item, index) => (
               <div key={index} className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">{item.menuItem?.name}</p>
+                  <p className="font-medium">{item.name || item.menuItem?.name}</p>
                   <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                 </div>
                 <p className="font-semibold">
