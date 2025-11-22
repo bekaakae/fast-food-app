@@ -37,7 +37,6 @@ const Cart = () => {
     setIsProcessing(true);
 
     try {
-      // ✅ FIX: Use the full backend URL from environment variable
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
       console.log('API Base URL:', API_BASE_URL);
 
@@ -45,7 +44,7 @@ const Cart = () => {
       const orderData = {
         items: items.map(item => ({
           menuItem: item._id,
-          name: item.name, // ✅ ADD THIS - your backend expects name
+          name: item.name,
           quantity: item.quantity,
           price: item.price
         })),
@@ -68,7 +67,9 @@ const Cart = () => {
       if (paymentResponse.data.success) {
         toast.success('Order placed successfully!');
         clearCart();
-        navigate('/track-order', { 
+        
+        // ✅ FIX: Changed from '/track-order' to '/order-tracking'
+        navigate('/order-tracking', { 
           state: { orderId: orderResponse.data._id } 
         });
       } else {
