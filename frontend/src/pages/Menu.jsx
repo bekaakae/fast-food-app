@@ -18,11 +18,10 @@ const Menu = () => {
 
   const fetchMenuItems = async () => {
     try {
-      // ✅ FIX: Use the environment variable for API base URL
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-      console.log('Fetching from:', `${API_BASE_URL}/api/items`);
+      console.log('Fetching from:', `${API_BASE_URL}/api/menu`); // ✅ Changed to /api/menu
       
-      const response = await axios.get(`${API_BASE_URL}/api/items`);
+      const response = await axios.get(`${API_BASE_URL}/api/menu`); // ✅ Changed to /api/menu
       setMenuItems(response.data);
     } catch (error) {
       toast.error('Failed to load menu items');
