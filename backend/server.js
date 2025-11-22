@@ -9,7 +9,7 @@ require('dotenv').config();
 // Routes
 const menuRoutes = require('./routes/menu');
 const orderRoutes = require('./routes/orders');
-const paymentRoutes = require('./routes/payment'); // Now uncommented
+const paymentRoutes = require('./routes/payment');
 const adminRoutes = require('./routes/admin');
 const testRoutes = require('./routes/test'); // Remove in production
 
@@ -21,9 +21,25 @@ const app = express();
 // Security middleware
 app.use(helmet());
 
-// CORS configuration
+// ✅ FIXED CORS configuration - using dynamic origin handling
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://fast-food-app-3yx3.vercel.app',
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'https://fast-food-app-3yx3.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:5173'
+    ];
+    
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked for origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -67,12 +83,9 @@ connectDB();
 // Routes
 app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/payment', paymentRoutes); // Now uncommented
-
-// Admin routes (protect these in production!)
+app.use('/api/payment', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/test', testRoutes); // Remove in production
-
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
