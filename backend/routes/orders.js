@@ -33,6 +33,7 @@ router.post('/', async (req, res) => {
       orderNumber: generateOrderNumber(),
       items: items.map(item => ({
         menuItem: item.menuItem,
+        name: item.name,
         quantity: item.quantity,
         price: item.price
       })),
