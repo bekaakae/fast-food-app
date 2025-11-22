@@ -21,7 +21,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path="/track-order" element={<OrderTracking />} />
+              <Route path="/order-tracking" element={<OrderTracking />} />
               <Route path="/admin" element={<AdminPanel />} />
             </Routes>
           </main>
